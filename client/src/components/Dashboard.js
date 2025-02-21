@@ -5,9 +5,9 @@ import { Card, Button, Form, Spinner, Alert, ListGroup } from 'react-bootstrap';
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [fuelData, setFuelData] = useState(null); // Use null to indicate no data
-  const [salesData, setSalesData] = useState(null); // Use null to indicate no data
-  const [expensesData, setExpensesData] = useState(null); // Use null to indicate no data
+  const [fuelData, setFuelData] = useState(null);
+  const [salesData, setSalesData] = useState({ totalPetrolSold: 0, totalDieselSold: 0 });
+  const [expensesData, setExpensesData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -24,25 +24,28 @@ const Dashboard = () => {
       setError('');
 
       try {
-        // Fetch fuel data
-        const fuelResponse = await axios.get(`http://localhost:5000/api/fuel/remaining?date=${date}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        console.log("Fetching data for date:", date);
+        
+        const [fuelResponse, salesResponse, expensesResponse] = await Promise.all([
+          axios.get(`http://localhost:5000/api/fuel/remaining?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`http://localhost:5000/api/sales?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`http://localhost:5000/api/expenses/date?date=${date}`, { headers: { Authorization: `Bearer ${token}` } })
+        ]);
 
-        // Fetch sales data
-        const salesResponse = await axios.get(`http://localhost:5000/api/sales?date=${date}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        console.log("Fuel Data Response:", fuelResponse.data);
+        console.log("Sales Data Response:", salesResponse.data);
+        console.log("Expenses Data Response:", expensesResponse.data);
+        
+        setFuelData(fuelResponse.data || { petrolRemaining: 0, dieselRemaining: 0 });
+        setSalesData(salesResponse.data || { totalPetrolSold: 0, totalDieselSold: 0 });
 
-        // Fetch expenses data
-        const expensesResponse = await axios.get(`http://localhost:5000/api/expenses?date=${date}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        // Update state with fetched data
-        setFuelData(fuelResponse.data || null);
-        setSalesData(salesResponse.data || null);
-        setExpensesData(expensesResponse.data || null);
+        if (Array.isArray(expensesResponse.data)) {
+          setExpensesData(expensesResponse.data);
+        } else if (expensesResponse.data && expensesResponse.data.totalExpenses) {
+          setExpensesData([{ description: 'Total Expenses', amount: expensesResponse.data.totalExpenses }]);
+        } else {
+          setExpensesData([]);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('No data found for the selected date. Please try another date.');
@@ -52,13 +55,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-    console.log("Fetching data for date:", date);
   }, [date, navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -76,19 +73,14 @@ const Dashboard = () => {
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="fw-bold">Dashboard</h1>
-        <Button variant="danger" onClick={handleLogout}>
+        <Button variant="danger" onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}>
           Logout
         </Button>
       </div>
 
       <Form.Group className="mb-4">
         <Form.Label className="fw-semibold">Select Date:</Form.Label>
-        <Form.Control
-          type="date"
-          value={date}
-          onChange={handleDateChange}
-          max={new Date().toISOString().split('T')[0]}
-        />
+        <Form.Control type="date" value={date} onChange={handleDateChange} max={new Date().toISOString().split('T')[0]} />
       </Form.Group>
 
       {loading && (
@@ -115,9 +107,7 @@ const Dashboard = () => {
               ) : (
                 <Card.Text>No fuel data available for this date.</Card.Text>
               )}
-              <Link to="/add-fuel" className="btn btn-primary w-100">
-                Add Fuel
-              </Link>
+              <Link to="/add-fuel" className="btn btn-primary w-100">Add Fuel</Link>
             </Card.Body>
           </Card>
         </div>
@@ -129,20 +119,13 @@ const Dashboard = () => {
               <Card.Title className="fw-bold mb-3">Sales</Card.Title>
               {salesData ? (
                 <ListGroup variant="flush" className="mb-3">
-                  {salesData.map((sale, index) => (
-                    <ListGroup.Item key={index}>
-                      <p>Amount Paid: ₹{sale.amountPaid}</p>
-                      <p>Fuel Type: {sale.fuelType}</p>
-                      <p>Liters Dispensed: {sale.fuelType === 'petrol' ? sale.petrolSold : sale.dieselSold} L</p>
-                    </ListGroup.Item>
-                  ))}
+                  <ListGroup.Item>Total Petrol Sold: {salesData.totalPetrolSold} L</ListGroup.Item>
+                  <ListGroup.Item>Total Diesel Sold: {salesData.totalDieselSold} L</ListGroup.Item>
                 </ListGroup>
               ) : (
                 <ListGroup.Item>No sales recorded.</ListGroup.Item>
               )}
-              <Link to="/add-sales" className="btn btn-primary w-100">
-                Add Sales
-              </Link>
+              <Link to="/add-sales" className="btn btn-primary w-100">Add Sales</Link>
             </Card.Body>
           </Card>
         </div>
@@ -152,20 +135,16 @@ const Dashboard = () => {
           <Card className="shadow-sm h-100">
             <Card.Body>
               <Card.Title className="fw-bold mb-3">Expenses</Card.Title>
-              {expensesData ? (
+              {expensesData.length > 0 ? (
                 <ListGroup variant="flush" className="mb-3">
                   {expensesData.map((expense, index) => (
-                    <ListGroup.Item key={index}>
-                      {expense.description}: ₹{expense.amount}
-                    </ListGroup.Item>
+                    <ListGroup.Item key={index}>{expense.description}: Ksh. {expense.amount}</ListGroup.Item>
                   ))}
                 </ListGroup>
               ) : (
                 <ListGroup.Item>No expenses recorded.</ListGroup.Item>
               )}
-              <Link to="/add-expenses" className="btn btn-primary w-100">
-                Add Expense
-              </Link>
+              <Link to="/add-expenses" className="btn btn-primary w-100">Add Expense</Link>
             </Card.Body>
           </Card>
         </div>

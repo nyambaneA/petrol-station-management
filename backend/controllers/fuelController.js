@@ -55,9 +55,11 @@ const fuelController = {
         }
     
         res.status(200).json({
+          date: fuelData.date.toISOString(),
           petrolRemaining: fuelData.petrolRemaining,
           dieselRemaining: fuelData.dieselRemaining,
         });
+        
       } catch (error) {
         console.error("Error fetching remaining volumes:", error);
         res.status(500).json({ message: "Error fetching remaining volumes", error });

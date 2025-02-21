@@ -22,7 +22,7 @@ const expensesController = {
   // Get total expenses for a specific date
   getTotalExpensesByDate: async (req, res) => {
     const { date } = req.query;
-
+    console.log("Received request for expenses on date:", date);
     try {
       const queryDate = new Date(date);
       queryDate.setUTCHours(0, 0, 0, 0); // Normalize to start of the day UTC
@@ -35,7 +35,8 @@ const expensesController = {
       const totalExpenses = expensesData.reduce((sum, expense) => sum + expense.amount, 0);
       console.log("Total expenses:", totalExpenses);
 
-      res.status(200).json({ totalExpenses });
+      res.status(200).json({ date: queryDate.toISOString(), totalExpenses });
+
     } catch (error) {
       res.status(500).json({ message: 'Error fetching total expenses', error });
     }

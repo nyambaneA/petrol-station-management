@@ -65,20 +65,24 @@ const salesController = {
   // Get total sales for a specific date
   getTotalSalesByDate: async (req, res) => {
     const { date } = req.query;
-
+  
     try {
-      const startOfDay = new Date(new Date(date).setHours(0, 0, 0, 0));
-      const endOfDay = new Date(new Date(date).setHours(23, 59, 59, 999));
-
+      // Convert date to UTC and normalize to start of the day
+      const queryDate = new Date(date);
+      queryDate.setUTCHours(0, 0, 0, 0); // Ensure it's at midnight UTC
+  
+      console.log("Querying Sales with:", { date: queryDate });
+  
       const salesData = await Sales.find({
-        date: { $gte: startOfDay, $lte: endOfDay },
+        date: queryDate, // Use the exact match to prevent time shifts
       });
-
+  
       // Calculate total petrol and diesel sold
       const totalPetrolSold = salesData.reduce((sum, sale) => sum + sale.petrolSold, 0);
       const totalDieselSold = salesData.reduce((sum, sale) => sum + sale.dieselSold, 0);
-
+  
       res.status(200).json({
+        date: queryDate.toISOString(), // Send UTC date
         totalPetrolSold,
         totalDieselSold,
       });
@@ -86,5 +90,6 @@ const salesController = {
       res.status(500).json({ message: 'Error fetching total sales', error });
     }
   },
+  
 };
 module.exports = salesController;
