@@ -44,5 +44,9 @@ app.use('/api/fuel', fuelRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/expenses', expenseRoutes);
 
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+console.log('Sales Routes:', salesRoutes.stack.map(r => r.route));
+

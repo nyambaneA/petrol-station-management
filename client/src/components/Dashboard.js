@@ -28,7 +28,7 @@ const Dashboard = () => {
         
         const [fuelResponse, salesResponse, expensesResponse] = await Promise.all([
           axios.get(`http://localhost:5000/api/fuel/remaining?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`http://localhost:5000/api/sales?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`http://localhost:5000/api/sales/total?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`http://localhost:5000/api/expenses/date?date=${date}`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 

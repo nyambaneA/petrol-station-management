@@ -7,19 +7,43 @@ const salesController = {
     const { date, amountPaid, fuelType, petrolPrice, dieselPrice } = req.body;
 
     try {
-      const queryDate = new Date(date);
-        queryDate.setUTCHours(0, 0, 0, 0); // Normalize to start of the day UTC
-    
-        console.log("Querying MongoDB with:", { date: queryDate });
+      let queryDate = new Date(date);
+      queryDate.setUTCHours(0, 0, 0, 0); // Normalize to start of the day UTC
+
+      console.log("Querying MongoDB with:", { date: queryDate });
 
       // Find the fuel document for the given date
-      const fuelData = await Fuel.findOne({
-        date: queryDate
-      });
-      console.log("Queried sales Data:", fuelData);
+      let fuelData = await Fuel.findOne({ date: queryDate });
 
       if (!fuelData) {
-        return res.status(404).json({ message: 'No fuel data found for this date' });
+        console.log("No fuel data found for today. Checking for previous day's fuel data...");
+
+        // Find the most recent fuel record before today
+        let previousFuelData = await Fuel.findOne({
+          date: { $lt: queryDate }
+        }).sort({ date: -1 }); // Sort by date in descending order to get the latest entry
+
+        if (previousFuelData) {
+          console.log("Copying previous day's fuel data...");
+          console.log("Previous Fuel Data Retrieved:", previousFuelData);
+        
+          if (!previousFuelData.petrolVolume || !previousFuelData.dieselVolume) {
+            return res.status(400).json({ message: "Previous fuel data is missing volume details." });
+          }
+        
+          // Create new fuel document with all required fields
+          fuelData = new Fuel({
+            date: queryDate,
+            petrolVolume: previousFuelData.petrolVolume, // ✅ Copying previous petrolVolume
+            dieselVolume: previousFuelData.dieselVolume, // ✅ Copying previous dieselVolume
+            petrolRemaining: previousFuelData.petrolRemaining || previousFuelData.petrolVolume, // ✅ Fallback
+            dieselRemaining: previousFuelData.dieselRemaining || previousFuelData.dieselVolume, // ✅ Fallback
+          });
+        
+          await fuelData.save();
+        } else {
+          return res.status(404).json({ message: "No previous fuel data available" });
+        }
       }
 
       let petrolSold = 0;
@@ -47,17 +71,20 @@ const salesController = {
 
       // Create a new sales document
       const newSale = new Sales({
-        date: new Date(date),
+        date: queryDate,
         petrolSold,
         dieselSold,
         petrolPrice,
         dieselPrice,
         amountPaid,
       });
+
+      console.log("New Sale Record:", newSale);
       await newSale.save();
 
       res.status(201).json(newSale);
     } catch (error) {
+      console.error("Error adding sales:", error);
       res.status(500).json({ message: 'Error adding sales data', error });
     }
   },

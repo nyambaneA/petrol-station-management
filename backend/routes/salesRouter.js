@@ -6,7 +6,7 @@ const salesRouter = express.Router();
 console.log(salesController);
 
 salesRouter.post('/record', salesController.addSales);
-salesRouter.get('/', salesController.getTotalSalesByDate);
+salesRouter.get('/total', salesController.getTotalSalesByDate);
 
 // salesRouter.get('/total', salesController.getTotalSales);
 // salesRouter.get('/date', salesController.dateSale);
