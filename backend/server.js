@@ -8,6 +8,7 @@ const adminRoutes = require('./routes/adminRouter');
 const fuelRoutes = require('./routes/fuelRouter');  
 const salesRoutes = require('./routes/salesRouter');  
 const expenseRoutes = require('./routes/expenseRouter');  
+const recordsRoutes = require("./routes/records");
 
 // Load environment variables
 dotenv.config();
@@ -43,6 +44,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/fuel', fuelRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/expenses', expenseRoutes);
+app.use("/api/records", recordsRoutes);
 
 
 

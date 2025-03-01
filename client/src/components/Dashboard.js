@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, Button, Form, Spinner, Alert, ListGroup } from 'react-bootstrap';
+import DailyRecords from "./DailyRecords";
+import Charts from "./Charts";
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -39,20 +41,33 @@ const Dashboard = () => {
         setFuelData(fuelResponse.data || { petrolRemaining: 0, dieselRemaining: 0 });
         setSalesData(salesResponse.data || { totalPetrolSold: 0, totalDieselSold: 0 });
 
-        if (Array.isArray(expensesResponse.data)) {
-          setExpensesData(expensesResponse.data);
-        } else if (expensesResponse.data && expensesResponse.data.totalExpenses) {
-          setExpensesData([{ description: 'Total Expenses', amount: expensesResponse.data.totalExpenses }]);
-        } else {
-          setExpensesData([]);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('No data found for the selected date. Please try another date.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    //     if (Array.isArray(expensesResponse.data)) {
+    //       setExpensesData(expensesResponse.data);
+    //     } else if (expensesResponse.data && expensesResponse.data.totalExpenses) {
+    //       setExpensesData([{ description: 'Total Expenses', amount: expensesResponse.data.totalExpenses }]);
+    //     } else {
+    //       setExpensesData([]);
+    //     }
+    //   } catch (error) {
+    //     console.error('Error fetching data:', error);
+    //     setError('No data found for the selected date. Please try another date.');
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    if (expensesResponse.data && Array.isArray(expensesResponse.data.expenses)) {
+      setExpensesData(expensesResponse.data.expenses);
+    } else {
+      setExpensesData([]);
+    }
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    setError('No data found for the selected date. Please try another date.');
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchData();
   }, [date, navigate]);
@@ -131,25 +146,36 @@ const Dashboard = () => {
         </div>
 
         {/* Expenses */}
-        <div className="col-md-4">
-          <Card className="shadow-sm h-100">
-            <Card.Body>
-              <Card.Title className="fw-bold mb-3">Expenses</Card.Title>
-              {expensesData.length > 0 ? (
-                <ListGroup variant="flush" className="mb-3">
-                  {expensesData.map((expense, index) => (
-                    <ListGroup.Item key={index}>{expense.description}: Ksh. {expense.amount}</ListGroup.Item>
-                  ))}
-                </ListGroup>
-              ) : (
-                <ListGroup.Item>No expenses recorded.</ListGroup.Item>
-              )}
-              <Link to="/add-expenses" className="btn btn-primary w-100">Add Expense</Link>
-            </Card.Body>
-          </Card>
-        </div>
+ <div className="col-md-4">
+  <Card className="shadow-sm h-100">
+    <Card.Body>
+      <Card.Title className="fw-bold mb-3">Expenses</Card.Title>
+      
+      {expensesData.length > 0 ? (
+        <>
+          <ListGroup variant="flush" className="mb-3">
+            {expensesData.map((expense, index) => (
+              <ListGroup.Item key={index}>{expense.description}: Ksh. {expense.amount}</ListGroup.Item>
+            ))}
+          </ListGroup>
+          <h5 className="fw-bold mt-3">Total: Ksh. {expensesData.reduce((sum, expense) => sum + expense.amount, 0)}</h5>
+        </>
+      ) : (
+        <ListGroup.Item>No expenses recorded.</ListGroup.Item>
+      )}
+
+      <Link to="/add-expenses" className="btn btn-primary w-100">Add Expense</Link>
+    </Card.Body>
+  </Card>
+</div>
       </div>
+      <div className="container mt-5">
+      <h1 className="fw-bold mb-4"></h1>
+      <DailyRecords />
+      <Charts />
     </div>
+    </div>
+    
   );
 };
 
