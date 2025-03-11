@@ -19,7 +19,7 @@ const AddFuel = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/fuel/add',
+        'https://localhost:5000/api/fuel/add',
         { date, petrolVolume, dieselVolume },
         { headers: { Authorization: `Bearer ${token}` } }
       );

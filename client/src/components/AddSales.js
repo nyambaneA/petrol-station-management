@@ -21,7 +21,7 @@ const AddSales = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/sales/record',
+        'https://localhost:5000/api/sales/record',
         { date, amountPaid, fuelType, petrolPrice, dieselPrice },
         { headers: { Authorization: `Bearer ${token}` } }
       );

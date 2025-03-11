@@ -19,7 +19,7 @@ const DailyRecords = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/records/daily", {
+      const response = await axios.get("https://localhost:5000/api/records/daily", {
         params: { page, limit, startDate, endDate }, // Pass date range
         headers: { Authorization: `Bearer ${token}` },
       });

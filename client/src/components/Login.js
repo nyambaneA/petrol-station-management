@@ -17,7 +17,7 @@ function Login({ setToken }) {
     console.log('Login form submitted:', { username: trimmedUsername, password: trimmedPassword }); // Debug log
   
     try {
-      const response = await fetch('http://localhost:5000/api/admin/login', {
+      const response = await fetch('https://localhost:5000/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword }),
@@ -41,7 +41,7 @@ function Login({ setToken }) {
       setError('An error occurred. Please try again.');
     }
   };
-  
+
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
       <div className="card p-4 shadow-sm" style={{ width: '400px' }}>
