@@ -3,9 +3,9 @@ node_modules/
 
 # Ignore .env files
 .env
-.env.local
-.env.development
-.env.production
+# .env.local
+# .env.development
+# .env.production
 
 # Ignore log files
 *.log
@@ -21,6 +21,7 @@ dist/
 # Ignore OS-specific files
 .DS_Store
 Thumbs.db
+
 
 # Ignore npm/yarn cache
 .npm

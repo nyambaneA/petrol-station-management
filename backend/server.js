@@ -17,31 +17,31 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// const allowedOrigins = [
-//   "http://localhost:3000",
-//   "https://fueltrack-oigw.onrender.com",
-// ];
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         console.log(`Blocked by CORS: ${origin}`);
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true, 
-//   })
-// );
+const allowedOrigins = [
+  
+  "https://fueltrack-oigw.onrender.com"
+];
 
 app.use(
   cors({
-    origin: "*",  // Allow all origins (for testing)
-    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log(`Blocked by CORS: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, 
   })
 );
+
+// app.use(
+//   cors({
+//     origin: "*",  // Allow all origins (for testing)
+//     credentials: true,
+//   })
+// );
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
