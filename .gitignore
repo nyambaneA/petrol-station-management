@@ -11,7 +11,7 @@ node_modules/
 *.log
 
 # Ignore build directories
-build/
+
 dist/
 
 # Ignore IDE-specific files
