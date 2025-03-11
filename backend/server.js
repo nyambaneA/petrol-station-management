@@ -63,19 +63,15 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use("/api/records", recordsRoutes);
 
-// Serve frontend React app
-const clientPath = path.join(__dirname, 'client', 'build');
-console.log(`Serving frontend from: ${clientPath}`);
 
-app.use(express.static(clientPath));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(clientPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(500).send("Frontend not found. Try rebuilding React: `cd client && npm run build`");
-    }
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
   });
-});
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
