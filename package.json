@@ -2,7 +2,7 @@
     "name": "fueltrack",
     "version": "0.1.0",
     "private": true,
-    "main": "index.js",
+    "main": "server.js",
     "devDependencies": {
         "concurrently": "^9.1.2"
     },
