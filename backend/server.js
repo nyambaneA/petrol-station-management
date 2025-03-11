@@ -18,8 +18,9 @@ const app = express();
 app.use(express.json());
 
 const allowedOrigins = [
-  
+  "http://localhost:3000",
   "https://fueltrack-oigw.onrender.com"
+  
 ];
 
 app.use(
