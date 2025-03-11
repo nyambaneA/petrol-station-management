@@ -10,16 +10,21 @@ function Login({ setToken }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous errors
-
+  
+    const trimmedUsername = username.trim(); // Trim the username
+    const trimmedPassword = password.trim(); // Trim the password
+  
+    console.log('Login form submitted:', { username: trimmedUsername, password: trimmedPassword }); // Debug log
+  
     try {
       const response = await fetch('http://localhost:5000/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         localStorage.setItem('token', data.token); // Save token to localStorage
         setToken(data.token); // Update token state in App component
@@ -36,7 +41,7 @@ function Login({ setToken }) {
       setError('An error occurred. Please try again.');
     }
   };
-
+  
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
       <div className="card p-4 shadow-sm" style={{ width: '400px' }}>

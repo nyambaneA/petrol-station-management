@@ -1,0 +1,38 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore .env files
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignore log files
+*.log
+
+# Ignore build directories
+build/
+dist/
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore npm/yarn cache
+.npm
+.yarn
+.yarnrc
+
+#"dev": "nodemon api/index.js",
+#"start": "node api/index.js",
+#"build": "npm install && npm install --prefix client && npm run build --prefix client"
+
+#"install": "npm install --prefix backend && npm install --prefix client",
+#"build": "npm run build --prefix client",
+#"start": "concurrently \"node server.js\" \"npm start --prefix client\"",
+# "test": "react-scripts test",
+# "eject": "react-scripts eject"

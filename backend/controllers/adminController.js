@@ -21,7 +21,7 @@ const adminController = {
       // Create a new admin
       const newAdmin = new Admin({
         username,
-        password: hashedPassword, // Save the hashed password
+        password: hashedPassword,
       });
 
       // Save the admin to the database
@@ -40,6 +40,8 @@ const adminController = {
   // Login Admin
   loginAdmin: async (req, res) => {
     const { username, password } = req.body;
+
+    console.log('Login request received:', { username, password })
 
     try {
       // Check if the admin exists
