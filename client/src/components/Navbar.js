@@ -56,12 +56,12 @@ function Navbar({ token, onLogout }) {
               </>
             ) : (
               <li className="nav-item">
-                <button
+                {/* <button
                   className="btn btn-warning text-dark mt-2 mt-lg-0"
                   onClick={onLogout}
                 >
                   Logout
-                </button>
+                </button> */}
               </li>
             )}
           </ul>

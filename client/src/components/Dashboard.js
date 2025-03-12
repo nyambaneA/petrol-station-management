@@ -27,7 +27,7 @@ const Dashboard = () => {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
       try {
-        console.log("Fetching data for date:", date);
+      
         
         const [fuelResponse, salesResponse, expensesResponse] = await Promise.all([
           axios.get(`${API_URL}/api/fuel/remaining?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -35,9 +35,6 @@ const Dashboard = () => {
           axios.get(`${API_URL}/api/expenses/date?date=${date}`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
-        console.log("Fuel Data Response:", fuelResponse.data);
-        console.log("Sales Data Response:", salesResponse.data);
-        console.log("Expenses Data Response:", expensesResponse.data);
         
         setFuelData(fuelResponse.data || { petrolRemaining: 0, dieselRemaining: 0 });
         setSalesData(salesResponse.data || { totalPetrolSold: 0, totalDieselSold: 0 });
@@ -50,7 +47,7 @@ const Dashboard = () => {
     //       setExpensesData([]);
     //     }
     //   } catch (error) {
-    //     console.error('Error fetching data:', error);
+    //    
     //     setError('No data found for the selected date. Please try another date.');
     //   } finally {
     //     setLoading(false);
@@ -63,7 +60,7 @@ const Dashboard = () => {
     }
 
   } catch (error) {
-    console.error('Error fetching data:', error);
+    
     setError('No data found for the selected date. Please try another date.');
   } finally {
     setLoading(false);

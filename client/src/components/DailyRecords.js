@@ -31,7 +31,7 @@ const DailyRecords = () => {
       });
     } catch (error) {
       setError(error.response?.data?.message || "Error fetching daily records");
-      console.error("Error fetching daily records:", error);
+     
     } finally {
       setLoading(false);
     }

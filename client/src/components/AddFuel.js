@@ -27,7 +27,7 @@ const AddFuel = () => {
       alert('Fuel data added successfully!');
       navigate('/dashboard');
     } catch (error) {
-      console.error('Error adding fuel data:', error);
+     console.error('Error adding fuel data:', error);
       setError('Failed to add fuel data. Please try again.');
     } finally {
       setLoading(false);
