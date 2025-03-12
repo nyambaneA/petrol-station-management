@@ -49,7 +49,7 @@ const DailyRecords = () => {
   const handleExport = async (format) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:5000/api/records/export/${format}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/records/export/${format}`, {
         params: { startDate, endDate }, // Pass date range
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Important for file downloads

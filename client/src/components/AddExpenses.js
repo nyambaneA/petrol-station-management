@@ -19,7 +19,7 @@ const AddExpenses = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/expenses/add',
+        `${process.env.REACT_APP_API_URL}/api/expenses/add`,
         { date, description, amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );

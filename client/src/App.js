@@ -10,7 +10,7 @@ import Register from './components/Register';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
-
+  console.log("API URL:", process.env.REACT_APP_API_URL);
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove token from localStorage
