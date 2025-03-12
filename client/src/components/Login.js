@@ -12,10 +12,10 @@ function Login({ setToken }) {
     e.preventDefault();
     setError(''); // Clear any previous errors
   
-    const trimmedUsername = username.trim(); // Trim the username
-    const trimmedPassword = password.trim(); // Trim the password
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
   
-    console.log('Login form submitted:', { username: trimmedUsername, password: trimmedPassword }); // Debug log
+    console.log('Login form submitted:', { username: trimmedUsername, password: trimmedPassword });
   
     try {
       const response = await fetch(`${API_URL}/api/admin/login`, {
@@ -27,16 +27,11 @@ function Login({ setToken }) {
       const data = await response.json();
   
       if (response.ok) {
-        localStorage.setItem('token', data.token); // Save token to localStorage
-        setToken(data.token); // Update token state in App component
-        navigate('/dashboard'); // Redirect to dashboard
+        localStorage.setItem('token', data.token);
+        setToken(data.token);
+        navigate('/dashboard');
       } else {
-        // Handle errors from the backend
-        if (data.message === 'Invalid username or password') {
-          setError('Invalid username or password.');
-        } else {
-          setError('Login failed. Please try again.');
-        }
+        setError(data.message || 'Login failed. Please try again.');
       }
     } catch (error) {
       setError('An error occurred. Please try again.');
@@ -46,7 +41,10 @@ function Login({ setToken }) {
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
       <div className="card p-4 shadow-sm" style={{ width: '400px' }}>
-        <h2 className="card-title text-center mb-4">Login</h2>
+        <h2 className="card-title text-center mb-3">Welcome to FuelTrack</h2>
+        <p className="text-center text-muted">
+          Effortlessly track fuel levels, sales, and expenses. Please log in to continue.
+        </p>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleLogin}>
           <div className="mb-3">
