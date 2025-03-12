@@ -17,9 +17,10 @@ const DailyRecords = () => {
   const [endDate, setEndDate] = useState("");
 
   const fetchData = async () => {
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://localhost:5000/api/records/daily", {
+      const response = await axios.get(`${API_URL}/api/records/daily`, {
         params: { page, limit, startDate, endDate }, // Pass date range
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -47,9 +48,10 @@ const DailyRecords = () => {
   };
 
   const handleExport = async (format) => {
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/records/export/${format}`, {
+      const response = await axios.get(`${API_URL}/api/records/export/${format}`, {
         params: { startDate, endDate }, // Pass date range
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Important for file downloads

@@ -6,6 +6,7 @@ function Login({ setToken }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ function Login({ setToken }) {
     console.log('Login form submitted:', { username: trimmedUsername, password: trimmedPassword }); // Debug log
   
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/login`, {
+      const response = await fetch(`${API_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword }),

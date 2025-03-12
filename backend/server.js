@@ -16,27 +16,27 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 
-// const allowedOrigins = [
-//   "http://localhost:3000",
-//   "https://fueltrack-7aua.onrender.com"
-  
-// ];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://fueltrack-7aua.onrender.com"
+];
 
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         console.log(`Blocked by CORS: ${origin}`);
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true, 
-//   })
-// );
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+        callback(null, true);
+      } else {
+        console.log(`Blocked by CORS: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, 
+  })
+);
+
 
 // app.use(
 //   cors({

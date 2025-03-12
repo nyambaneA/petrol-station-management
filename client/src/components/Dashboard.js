@@ -24,14 +24,15 @@ const Dashboard = () => {
     const fetchData = async () => {
       setLoading(true);
       setError('');
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
       try {
         console.log("Fetching data for date:", date);
         
         const [fuelResponse, salesResponse, expensesResponse] = await Promise.all([
-          axios.get(`${process.env.REACT_APP_API_URL}/api/fuel/remaining?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${process.env.REACT_APP_API_URL}/api/sales/total?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${process.env.REACT_APP_API_URL}/api/expenses/date?date=${date}`, { headers: { Authorization: `Bearer ${token}` } })
+          axios.get(`${API_URL}/api/fuel/remaining?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_URL}/api/sales/total?date=${date}`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_URL}/api/expenses/date?date=${date}`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
         console.log("Fuel Data Response:", fuelResponse.data);

@@ -10,9 +10,10 @@ function Register({ setToken }) {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous errors
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
     try {
-      const response = await fetch(`${process.env.API_BASE_URL}/api/admin/register`, {
+      const response = await fetch(`${API_URL}/api/admin/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
